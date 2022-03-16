@@ -1,6 +1,4 @@
 <template>
-  <h1>hello0</h1>
-  <input type="text" />
   <router-view></router-view>
 </template>
 
