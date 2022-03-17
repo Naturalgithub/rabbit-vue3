@@ -4,5 +4,6 @@ import router from './router'
 import store from './store'
 import 'normalize.css'
 import './assets/styles/common.less'
+import '@/mock/index'
 
 createApp(App).use(store).use(router).mount('#app')

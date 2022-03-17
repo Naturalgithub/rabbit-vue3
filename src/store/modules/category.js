@@ -28,6 +28,8 @@ export default {
   actions: {
     async getList ({ commit }) {
       const { result } = await findAllCategory()
+      console.log(result)
+
       // 给一级分类加open控制显示隐藏
       result.forEach((item) => (item.open = false))
       // 获取数据成功，提交mutations进行数据修改
