@@ -26,8 +26,6 @@ const getHeadCategroy = () => {
     // 生成10条二级分类数据
     const children = []
     for (let index = 0; index < Mock.mock('@integer(1,10)'); index++) {
-      console.log(index)
-
       children.push(
         Mock.mock({
           name: '@cname',
