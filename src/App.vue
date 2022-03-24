@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import axios from '@/utils/request'
+// import axios from '@/utils/request'
 export default {
   async created () {
-    const res = await axios.get('/home/index')
-    console.log(res)
+    // const res = await axios.get('/home/index')
+    // console.log(res)
   }
 }
 </script>
