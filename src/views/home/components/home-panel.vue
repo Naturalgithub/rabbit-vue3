@@ -1,8 +1,53 @@
-<!--
- * @Date: 2022-03-24 10:32:31
- * @LastEditTime: 2022-03-24 10:32:32
- * @LastEditors: hahake
- * @Description:
- * @FilePath: \rabbit-vue3\src\views\home\components\home-panel.vue
- * 佛祖、耶稣、真主、我党保佑永无BUG！
--->
+<template>
+  <div class="home-panel">
+    <div class="container">
+      <div class="head">
+        <h3>
+          {{ title }}<small>{{ subTitle }}</small>
+        </h3>
+        <slot name="right"> </slot>
+      </div>
+      <slot></slot>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HomePanel',
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    subTitle: {
+      type: String,
+      default: ''
+    }
+  }
+}
+</script>
+
+<style scoped lang="less">
+.home-panel {
+  background-color: #fff;
+  .head {
+    padding: 40px 0;
+    display: flex;
+    align-items: flex-end;
+    h3 {
+      flex: 1;
+      font-size: 32px;
+      font-weight: normal;
+      margin-left: 6px;
+      height: 35px;
+      line-height: 35px;
+      small {
+        font-size: 16px;
+        color: #999;
+        margin-left: 20px;
+      }
+    }
+  }
+}
+</style>
