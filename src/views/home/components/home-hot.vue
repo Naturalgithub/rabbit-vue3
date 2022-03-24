@@ -17,9 +17,11 @@
 import { ref } from 'vue'
 import HomePanel from './home-panel'
 import { findHot } from '@/api/home'
+import HomeSkeleton from './home-skeleton'
+
 export default {
   name: 'HomeNew',
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup () {
     const goods = ref([])
     findHot().then((data) => {

@@ -20,7 +20,7 @@
 import { ref } from 'vue'
 import { findNew } from '@/api/home'
 import HomePanel from './home-panel'
-import HomeSkeleton from './home-skeleton.vue'
+import HomeSkeleton from './home-skeleton'
 export default {
   name: 'HomeNew',
   components: {
@@ -32,7 +32,6 @@ export default {
     findNew().then((res) => {
       goods.value = res.result
     })
-
     return {
       goods
     }

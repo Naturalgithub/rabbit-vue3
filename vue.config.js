@@ -8,5 +8,8 @@ module.exports = {
         path.join(__dirname, './src/assets/styles/mixins.less')
       ]
     }
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }
