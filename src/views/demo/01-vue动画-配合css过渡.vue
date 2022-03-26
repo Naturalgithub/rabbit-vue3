@@ -8,9 +8,9 @@
     <div v-show="show">demo</div>
   </Transition>
 
-  <!-- <Transition name="bb">
+  <Transition name="bb">
     <div v-show="show">133</div>
-  </Transition> -->
+  </Transition>
 </template>
 
 <script>

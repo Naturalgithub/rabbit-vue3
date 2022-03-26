@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^8.1.1",
+    "animate.css": "^4.1.1",
     "axios": "^0.26.1",
     "core-js": "^3.6.5",
     "mockjs": "^1.1.0",

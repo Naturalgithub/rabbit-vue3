@@ -6,5 +6,6 @@ import 'normalize.css'
 import './assets/styles/common.less'
 import XtxUI from '@/components'
 // import '@/mock/index'
+import 'animate.css'
 
 createApp(App).use(store).use(router).use(XtxUI).mount('#app')
