@@ -1,6 +1,6 @@
 /*
  * @Date: 2022-03-24 09:12:30
- * @LastEditTime: 2022-03-24 10:51:43
+ * @LastEditTime: 2022-03-28 14:09:37
  * @LastEditors: hahake
  * @Description:
  * @FilePath: \rabbit-vue3\src\api\home.js
@@ -37,5 +37,27 @@ export function findHot () {
   return request({
     method: 'get',
     url: 'home/hot'
+  })
+}
+
+/**
+ * 获取商品数据
+ * @returns Promise
+ */
+export function findGoods () {
+  return request({
+    method: 'get',
+    url: 'home/goods'
+  })
+}
+
+/**
+ * 获取专题数据
+ * @returns Promise
+ */
+export function findSpecial () {
+  return request({
+    method: 'get',
+    url: 'home/special'
   })
 }
