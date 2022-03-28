@@ -42,7 +42,6 @@ export default {
             threshold: 0
           }
         )
-
         observer.observe(el)
       }
     })
