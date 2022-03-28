@@ -1,11 +1,9 @@
 <template>
-  <div>登录组件</div>
+  <div class="page-login">Login</div>
 </template>
-
 <script>
 export default {
-  name: 'Login'
+  name: 'PageLogin'
 }
 </script>
-
-<style></style>
+<style scoped lang="less"></style>
