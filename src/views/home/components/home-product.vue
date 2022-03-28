@@ -11,7 +11,7 @@
       </template>
       <div class="box">
         <RouterLink class="cover" to="/">
-          <img style="object-fit: cover" :src="item.picture" alt="" />
+          <img style="object-fit: cover" v-lazy="item.picture" alt="" />
           <strong class="label">
             <span>{{ item.name }}馆</span>
             <span>{{ item.saleInfo }}</span>
@@ -21,7 +21,7 @@
           <li v-for="good in item.goods" :key="good.id">
             <div class="goods-item">
               <RouterLink to="/" class="image">
-                <img :src="good.picture" alt="" />
+                <img v-lazy="good.picture" alt="" />
               </RouterLink>
               <p class="name ellipsis-2">{{ good.name }}</p>
               <p class="desc ellipsis">{{ good.desc }}</p>
