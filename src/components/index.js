@@ -2,7 +2,8 @@
 // 这就是插件
 // vue2.0插件写法要素：导出一个对象，有install函数，默认传入了Vue构造函数，Vue基础之上扩展
 // vue3.0插件写法要素：导出一个对象，有install函数，默认传入了app应用实例，app基础之上扩展
-
+import { h, render } from 'vue'
+import XtxMessage from './xtx-message'
 export default {
   install (app) {
     // 在app上进行扩展，app提供 component directive 函数
@@ -46,4 +47,23 @@ export default {
       }
     })
   }
+}
+
+// 动态的给body创建一个盒子
+const div = document.createElement('div')
+div.setAttribute('class', 'xtx-message-container')
+document.body.appendChild(div)
+let timer = null
+export function Message ({ type, text, duration = 2000 }) {
+  // 渲染XtxMessage组件
+  // <XtxMessage :type="type" :text="text"></XtxMessage>
+  const vNode = h(XtxMessage, { type, text })
+  render(vNode, div)
+
+  // 开启延时器
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    // 删除虚拟DOM
+    render(null, div)
+  }, duration)
 }

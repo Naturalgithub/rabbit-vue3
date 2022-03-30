@@ -1,21 +1,23 @@
 <!--
  * @Date: 2022-03-23 14:24:59
- * @LastEditTime: 2022-03-23 14:25:00
+ * @LastEditTime: 2022-03-30 16:28:30
  * @LastEditors: hahake
  * @Description:
  * @FilePath: \rabbit-vue3\src\components\xtx-skeleton.vue
  * 佛祖、耶稣、真主、我党保佑永无BUG！
 -->
 <template>
-  <div
-    class="xtx-skeleton"
-    :style="{ width, height }"
-    :class="{ shan: animated }"
-  >
-    <!-- 1 盒子-->
-    <div class="block" :style="{ backgroundColor: bg }"></div>
-    <!-- 2 闪效果 xtx-skeleton 伪元素 --->
-  </div>
+  <Transition name="down">
+    <div
+      class="xtx-skeleton"
+      :style="{ width, height }"
+      :class="{ shan: animated }"
+    >
+      <!-- 1 盒子-->
+      <div class="block" :style="{ backgroundColor: bg }"></div>
+      <!-- 2 闪效果 xtx-skeleton 伪元素 --->
+    </div>
+  </Transition>
 </template>
 <script>
 export default {
@@ -76,6 +78,21 @@ export default {
   }
   100% {
     left: 120%;
+  }
+}
+.down {
+  &-enter {
+    &-from {
+      transform: translate3d(0, -75px, 0);
+      opacity: 0;
+    }
+    &-active {
+      transition: all 0.5s;
+    }
+    &-to {
+      transform: none;
+      opacity: 1;
+    }
   }
 }
 </style>
