@@ -1,5 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useIntersectionObserver } from '@vueuse/core'
+import { useIntersectionObserver, useIntervalFn } from '@vueuse/core'
 
 export const useWindowScroll = () => {
   const x = ref(0)
@@ -60,5 +60,42 @@ export const useLazyData = (apiFn) => {
   return {
     target,
     list
+  }
+}
+
+/**
+ * 倒计时逻辑
+ * @param {*} count
+ * @returns
+ */
+export const useCountDown = () => {
+  // 验证码登录
+  const time = ref(0)
+
+  const { pause, resume } = useIntervalFn(
+    () => {
+      /* your function */
+      time.value--
+      if (time.value <= 0) {
+        pause()
+      }
+    },
+    1000,
+    { immediate: false }
+  )
+
+  onUnmounted(() => {
+    pause() // 暂停定时器
+  })
+
+  const start = () => {
+    // 开启倒计时
+    time.value = 60
+    resume()
+  }
+
+  return {
+    time,
+    start
   }
 }

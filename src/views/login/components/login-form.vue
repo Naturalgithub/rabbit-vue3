@@ -74,7 +74,9 @@
               placeholder="请输入验证码"
               :class="{ error: errors.code }"
             />
-            <span class="code">发送验证码</span>
+            <span class="code" @click="send">
+              {{ time === 0 ? '发送验证码' : `${time}秒后发送` }}</span
+            >
           </div>
           <div class="error" v-if="errors.code">
             <i class="iconfont icon-warning" />{{ errors.code }}
@@ -112,8 +114,10 @@
 import { ref, reactive, watch } from 'vue'
 import { Message } from '@/components/index'
 import { useRouter } from 'vue-router'
-import { userAccountLogin } from '@/api/user'
+import { useStore } from 'vuex'
+import { userAccountLogin, userMobileLoginMsg } from '@/api/user'
 import { Form, Field, configure } from 'vee-validate'
+import { useCountDown } from '@/hooks'
 import {
   account,
   mobile,
@@ -141,25 +145,6 @@ export default {
       resetFormData(form, (form) => (form.isAgree = true))
     })
 
-    // 登录
-    const target = ref(null)
-    const router = useRouter()
-    const login = async () => {
-      // console.log('发送请求登录')
-      const res = await target.value.validate()
-      if (!res) return
-
-      try {
-        const res = await userAccountLogin(form.account, form.password)
-        console.log(res)
-        Message({ type: 'success', text: '登录成功' })
-        // 跳转到首页
-        router.push('/')
-      } catch (e) {
-        Message({ type: 'error', text: e.response.data.message })
-      }
-    }
-
     const form = reactive({
       account: '',
       password: '',
@@ -177,12 +162,56 @@ export default {
       code,
       isAgree
     }
+
+    // 密码登录
+    const target = ref(null)
+    const router = useRouter()
+    const store = useStore()
+    const login = async () => {
+      // console.log('发送请求登录')
+      const res = await target.value.validate()
+      if (!res) return
+
+      try {
+        const { result } = await userAccountLogin(form.account, form.password)
+        console.log(result)
+        store.commit('user/setProfile', result)
+        Message({ type: 'success', text: '登录成功' })
+        // 跳转到首页
+        router.push('/')
+      } catch (e) {
+        Message({ type: 'error', text: e.response.data.message })
+      }
+    }
+
+    // 验证码登录
+    const { time, start } = useCountDown()
+    const send = async () => {
+      // 对手机号进行验证
+      const valid = rules.mobile(form.mobile)
+      if (valid !== true) {
+        return target.value.setFieldError('mobile', valid)
+      }
+      if (time.value > 0) return
+      try {
+        // 发送验证码功能
+        await userMobileLoginMsg(form.mobile)
+        Message({ type: 'success', text: '发送成功' })
+        // 开启倒计时
+        start()
+      } catch (error) {
+        Message({ type: 'error', text: '不要频繁发送请求' })
+      }
+    }
+
     return {
       isMsgLogin,
       target,
       rules,
       form,
-      login
+      login,
+      send,
+      time
     }
   }
 }

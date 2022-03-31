@@ -3,13 +3,17 @@
     <div class="container">
       <ul>
         <li>
-          <a href="javascript:;"><i class="iconfont icon-user"></i>周杰伦</a>
+          <a href="javascript:;"
+            ><i class="iconfont icon-user"></i> {{ profile.nickname }}</a
+          >
         </li>
-        <li><RouterLink to="/login">请先登录</RouterLink></li>
-        <li><a href="javascript:;">免费注册</a></li>
-        <li><a href="javascript:;">退出登录</a></li>
-        <li><a href="javascript:;">请先登录</a></li>
-        <li><a href="javascript:;">免费注册</a></li>
+        <template v-if="profile.token">
+          <li><a href="javascript:;" @click="logout">退出登录</a></li>
+        </template>
+        <template v-else>
+          <li><RouterLink to="/login">请先登录</RouterLink></li>
+          <li><a href="javascript:;">免费注册</a></li>
+        </template>
         <li><a href="javascript:;">我的订单</a></li>
         <li><a href="javascript:;">会员中心</a></li>
         <li><a href="javascript:;">帮助中心</a></li>
@@ -22,8 +26,31 @@
   </nav>
 </template>
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { Message } from '@/components/index'
 export default {
-  name: 'AppTopnav'
+  name: 'AppTopnav',
+  setup () {
+    const store = useStore()
+    const router = useRouter()
+
+    const profile = computed(() => {
+      return store.state.user.profile
+    })
+
+    const logout = () => {
+      store.commit('user/setProfile', {})
+      router.push('/login')
+      Message({ type: 'success', text: '退出成功' })
+    }
+
+    return {
+      profile,
+      logout
+    }
+  }
 }
 </script>
 <style scoped lang="less">
