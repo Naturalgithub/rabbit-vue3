@@ -115,7 +115,11 @@ import { ref, reactive, watch } from 'vue'
 import { Message } from '@/components/index'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { userAccountLogin, userMobileLoginMsg } from '@/api/user'
+import {
+  userAccountLogin,
+  userMobileLoginMsg,
+  userMobileLogin
+} from '@/api/user'
 import { Form, Field, configure } from 'vee-validate'
 import { useCountDown } from '@/hooks'
 import {
@@ -173,9 +177,14 @@ export default {
       if (!res) return
 
       try {
-        const { result } = await userAccountLogin(form.account, form.password)
-        console.log(result)
-        store.commit('user/setProfile', result)
+        let res = null
+
+        if (isMsgLogin.value) {
+          res = await userMobileLogin(form.mobile, form.code)
+        } else {
+          res = await userAccountLogin(form.account, form.password)
+        }
+        store.commit('user/setProfile', res.result)
         Message({ type: 'success', text: '登录成功' })
         // 跳转到首页
         router.push('/')
@@ -196,6 +205,7 @@ export default {
       try {
         // 发送验证码功能
         await userMobileLoginMsg(form.mobile)
+
         Message({ type: 'success', text: '发送成功' })
         // 开启倒计时
         start()
