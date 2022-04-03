@@ -4,7 +4,7 @@
       <ul>
         <li>
           <a href="javascript:;"
-            ><i class="iconfont icon-user"></i> {{ profile.nickname }}</a
+            ><i class="iconfont icon-user"></i> {{ profile.account }}</a
           >
         </li>
         <template v-if="profile.token">

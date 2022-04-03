@@ -21,6 +21,9 @@ module.exports = {
     config.devServer.disableHostCheck(true)
   },
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    externals: {
+      qc: 'QC'
+    }
   }
 }
