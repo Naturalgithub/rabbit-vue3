@@ -2,7 +2,7 @@
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
     <li
-      @mouseenter="show(item)"
+      @mousemove="show(item)"
       @mouseleave="hide(item)"
       v-for="item in list"
       :key="item.id"

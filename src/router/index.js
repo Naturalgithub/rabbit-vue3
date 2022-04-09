@@ -17,6 +17,10 @@ const routes = [
       {
         path: '/category/sub/:id',
         component: () => import('@/views/category/sub')
+      },
+      {
+        path: '/product/:id',
+        component: () => import('@/views/goods')
       }
     ]
   },
@@ -36,7 +40,10 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  scrollBehavior () {
+    return { left: 0, top: 0 }
+  }
 })
 
 export default router

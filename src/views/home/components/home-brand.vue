@@ -53,7 +53,6 @@ export default {
   components: { HomePanel },
   setup () {
     const { target, list } = useLazyData(() => findBrand(10))
-    console.log(findBrand)
 
     // 控制下标
     const index = ref(0)
