@@ -29,13 +29,19 @@ export default {
   left: 0;
   top: 0;
   z-index: 98;
-  ::v-deep {
-    .carousel-btn.prev {
-      left: 270px !important;
-    }
-    .carousel-indicator {
-      padding-left: 250px;
-    }
+  :deep(.carousel-btn.prev) {
+    left: 270px !important;
   }
+  :deep(.carousel-indicator) {
+    padding-left: 250px;
+  }
+  // ::v-deep {
+  //   .carousel-btn.prev {
+  //     left: 270px !important;
+  //   }
+  //   .carousel-indicator {
+  //     padding-left: 250px;
+  //   }
+  // }
 }
 </style>
