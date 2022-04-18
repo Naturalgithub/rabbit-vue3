@@ -27,7 +27,7 @@
           <!-- 数量组件 -->
           <XtxNumbox v-model="num" :max="goods?.inventory"></XtxNumbox>
           <!-- 加入购物车 -->
-          <XtxButton type="primary" style="margin-top: 20px"
+          <XtxButton type="primary" style="margin-top: 20px" @click="addCart"
             >加入购物车</XtxButton
           >
         </div>
@@ -68,6 +68,8 @@ import GoodsWarn from './components/goods-warn.vue'
 import { provide, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { findGoods } from '@/api/product'
+import { Message } from '@/components'
+import { useStore } from 'vuex'
 export default {
   name: 'XtxGoodsPage',
   components: {
@@ -81,18 +83,23 @@ export default {
     GoodsWarn
   },
   setup () {
+    const store = useStore()
     const goods = useGoods()
     // 跨级通讯
     provide('goods', goods)
 
     const num = ref(1)
+    const currentSku = ref({})
     // 更改商品响应式数据
     const changeSku = (sku) => {
-      if (sku) {
+      console.log('🚀 ~ file: index.vue ~ line 93 ~ changeSku ~ sku', sku)
+      if (sku.id) {
         goods.value.price = sku.price
         goods.value.oldPrice = sku.oldPrice
         goods.value.inventory = sku.inventory
       }
+      // 把传递过来的sku保存起来
+      currentSku.value = sku
     }
 
     const hotArr = ref([
@@ -110,11 +117,39 @@ export default {
       }
     ])
 
+    /**
+     * @description: 加入购物车
+     * @param {*}
+     */
+    const addCart = async () => {
+      if (!currentSku.value.id) {
+        return Message({ type: 'warning', text: '请选择完整信息' })
+      }
+      console.log(goods.value)
+      await store.dispatch('cart/insertCart', {
+        id: goods.value.id,
+        name: goods.value.name,
+        picture: goods.value.mainPictures[0],
+        price: currentSku.value.price,
+        count: num.value,
+        skuId: currentSku.value.id,
+        selected: false,
+        nowPrice: currentSku.value.price,
+        stock: currentSku.value.inventory,
+        isEffective: true,
+        attrsText: currentSku.value.specs.reduce(
+          (prev, item) => `${prev} ${item.name}: ${item.valueName}`,
+          ''
+        )
+      })
+      Message({ text: '加入购物车成功' })
+    }
     return {
       goods,
       changeSku,
       num,
-      hotArr
+      hotArr,
+      addCart
     }
   }
 }

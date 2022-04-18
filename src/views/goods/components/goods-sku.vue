@@ -70,6 +70,8 @@ export default {
           (item) => item.id === selectedSkuId
         )
         emit('changeSku', selectedSku)
+      } else {
+        emit('changeSku', {})
       }
     }
 
@@ -154,7 +156,6 @@ function getSelectedSpec (specs) {
 const initSelectedStatus = (goods, skuId) => {
   // 找到存在的sku
   const skus = goods.skus.find((sku) => sku.id === skuId)
-  console.log(goods)
 
   // 在规格list中找到存在的规格selected = true
   if (skus) {
