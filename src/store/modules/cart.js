@@ -166,6 +166,23 @@ export default {
           context.commit('updateCart', { skuId: item.skuId, selected })
         })
       }
+    },
+    // 批量删除选中商品
+    batchDeleteCart (ctx, isClear) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 登录 TODO
+        } else {
+          // 本地
+          // 1. 获取选中商品列表，进行遍历调用deleteCart mutaions函数
+          ctx.getters[isClear ? 'invalidList' : 'selectedList'].forEach(
+            (item) => {
+              ctx.commit('deleteCart', item.skuId)
+              Message({ text: '删除成功！' })
+            }
+          )
+        }
+      })
     }
   }
 }

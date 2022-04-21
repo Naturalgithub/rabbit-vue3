@@ -4,6 +4,8 @@
 // vue3.0插件写法要素：导出一个对象，有install函数，默认传入了app应用实例，app基础之上扩展
 import { h, render } from 'vue'
 import XtxMessage from './xtx-message'
+import XtxConfirm from './xtx-confirm.vue'
+
 export default {
   install (app) {
     // 在app上进行扩展，app提供 component directive 函数
@@ -66,4 +68,34 @@ export function Message ({ type, text, duration = 2000 }) {
     // 删除虚拟DOM
     render(null, div)
   }, duration)
+}
+
+// 动态的给body创建一个盒子
+const confirmDiv = document.createElement('div')
+confirmDiv.setAttribute('class', 'xtx-confrim-container')
+document.body.appendChild(confirmDiv)
+
+export function Confirm ({ title, text }) {
+  return new Promise((resolve, reject) => {
+    const confirmCallback = () => {
+      render(null, confirmDiv)
+      resolve()
+    }
+
+    const cancelCallback = () => {
+      render(null, confirmDiv)
+      reject(new Error('点击了取消'))
+    }
+
+    // 1. 渲染组件
+    // 2. 点击确认按钮，触发resolve同时销毁组件
+    // 3. 点击取消按钮，触发reject同时销毁组件
+    const vnode = h(XtxConfirm, {
+      title,
+      text,
+      confirmCallback,
+      cancelCallback
+    })
+    render(vnode, confirmDiv)
+  })
 }

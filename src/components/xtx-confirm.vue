@@ -1,29 +1,37 @@
 <template>
-  <div class="xtx-confirm" v-if="show">
-    <div class="wrapper">
+  <div class="xtx-confirm" :class="{ fade: show }">
+    <div class="wrapper" :class="{ fade: show }">
       <div class="header">
-        <h3>温馨提示</h3>
+        <h3>{{ title }}</h3>
         <a
           href="JavaScript:;"
           class="iconfont icon-close-new"
-          @click="cancel"
+          @click="cancelCallback"
         ></a>
       </div>
       <div class="body">
         <i class="iconfont icon-warning"></i>
-        <span>您确认从购物车删除该商品吗？</span>
+        <span>{{ text }}</span>
       </div>
       <div class="footer">
-        <XtxButton size="mini" type="gray" @click="cancel">取消</XtxButton>
-        <XtxButton size="mini" type="primary" @click="confirm">确认</XtxButton>
+        <XtxButton size="mini" type="gray" @click="cancelCallback">
+          取消
+        </XtxButton>
+        <XtxButton size="mini" type="primary" @click="confirmCallback">
+          确认
+        </XtxButton>
       </div>
     </div>
   </div>
 </template>
 <script>
 import { onMounted, ref } from 'vue'
+import XtxButton from './xtx-button.vue'
 export default {
   name: 'XtxConfirm',
+  components: {
+    XtxButton
+  },
   props: {
     title: {
       type: String,
@@ -31,33 +39,29 @@ export default {
     },
     text: {
       type: String,
-      default: ''
+      required: true
+    },
+    confirmCallback: {
+      type: Function
+    },
+    cancelCallback: {
+      type: Function
     }
   },
   setup () {
-    // 控制显示隐藏
     const show = ref(false)
-    // 渲染时显示弹窗
     onMounted(() => {
-      show.value = true
+      setTimeout(() => {
+        show.value = true
+      }, 0)
     })
-    // 点击取消
-    const cancel = () => {
-      show.value = false
-    }
-    // 点击确定
-    const confirm = () => {
-      show.value = false
-    }
+
     return {
-      show,
-      cancel,
-      confirm
+      show
     }
   }
 }
 </script>
-
 <style scoped lang="less">
 .xtx-confirm {
   position: fixed;
@@ -66,7 +70,12 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 8888;
-  background: rgba(0, 0, 0, 0.5);
+  // background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0);
+  &.fade {
+    transition: all 0.4s;
+    background: rgba(0, 0, 0, 0.5);
+  }
   .wrapper {
     width: 400px;
     background: #fff;
@@ -74,7 +83,14 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    // transform: translate(-50%, -50%);
+    transform: translate(-50%, -60%);
+    opacity: 0;
+    &.fade {
+      transition: all 0.4s;
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
     .header,
     .footer {
       height: 50px;

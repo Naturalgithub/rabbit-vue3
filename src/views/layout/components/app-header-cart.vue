@@ -1,20 +1,17 @@
 <template>
   <div class="cart">
-    <a class="curr" href="javascript:;">
-      <i class="iconfont icon-cart"></i
-      ><em>{{ $store.getters['cart/validTotal'] }}</em>
-    </a>
-    <div class="layer" v-if="validTotal && $route.path !== '/cart'">
+    <RouterLink class="curr" to="/cart">
+      <i class="iconfont icon-cart"></i><em>{{ validTotal }}</em>
+    </RouterLink>
+    <div class="layer" v-if="validTotal > 0 && $route.path !== '/cart'">
       <div class="list">
-        <div
-          class="item"
-          v-for="item in $store.getters['cart/validList']"
-          :key="item.skuId"
-        >
-          <RouterLink class="curr" to="/cart">
+        <div class="item" v-for="item in validList" :key="item.skuId">
+          <RouterLink :to="`/product/${item.id}`">
             <img :src="item.picture" alt="" />
             <div class="center">
-              <p class="name ellipsis-2">{{ item.name }}</p>
+              <p class="name ellipsis-2">
+                {{ item.name }}
+              </p>
               <p class="attr ellipsis">{{ item.attrsText }}</p>
             </div>
             <div class="right">
@@ -22,24 +19,22 @@
               <p class="count">x{{ item.count }}</p>
             </div>
           </RouterLink>
-          <i
-            class="iconfont icon-close-new"
-            @click="deleteCart(item.skuId)"
-          ></i>
+          <i class="iconfont icon-close-new" @click="del(item.skuId)"></i>
         </div>
       </div>
       <div class="foot">
         <div class="total">
-          <p>共 {{ $store.getters['cart/validTotal'] }} 件商品</p>
-          <p>&yen;{{ $store.getters['cart/validAmount'] }}</p>
+          <p>共 {{ validTotal }} 件商品</p>
+          <p>&yen;{{ validAmount }}</p>
         </div>
-        <XtxButton type="plain" @click="$router.push('/cart')"
-          >去购物车结算</XtxButton
-        >
+        <XtxButton type="plain" @click="$router.push('/cart')">
+          去购物车结算
+        </XtxButton>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
@@ -48,25 +43,30 @@ export default {
   name: 'AppHeaderCart',
   setup () {
     const store = useStore()
-    const validTotal = computed(() => store.getters['cart/validTotal'])
+    // console.log(store.getters, 'getters')
     const validList = computed(() => store.getters['cart/validList'])
+    const validTotal = computed(() => store.getters['cart/validTotal'])
     const validAmount = computed(() => store.getters['cart/validAmount'])
+
     // 更新购物车的信息
     store.dispatch('cart/updateCart')
-    const deleteCart = async (skuId) => {
-      store.dispatch('cart/deleteCart', skuId)
-      Message({ type: 'success', text: '删除成功' })
+
+    // 删除购物车
+    const del = async (skuId) => {
+      await store.dispatch('cart/deleteCart', skuId)
+      Message({ text: '删除成功' })
     }
     return {
-      validTotal,
       validList,
+      validTotal,
       validAmount,
-      deleteCart
+      del
     }
   }
 }
 </script>
-<style scoped lang="less">
+
+<style lang="less" scoped>
 .cart {
   width: 50px;
   position: relative;
