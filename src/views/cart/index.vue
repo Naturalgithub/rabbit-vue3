@@ -125,9 +125,9 @@
             @change="checkAll"
             >全选</XtxCheckbox
           >
-          <a href="javascript:;">删除商品</a>
+          <a @click="batchDeleteCart()" href="javascript:;">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
-          <a href="javascript:;">清空失效商品</a>
+          <a href="javascript:;" @click="batchDeleteCart(true)">清空失效商品</a>
         </div>
         <div class="total">
           共 {{ $store.getters['cart/validTotal'] }} 件商品，已选择
@@ -144,6 +144,7 @@
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant'
 import CartNone from './components/cart-none.vue'
+import { Confirm } from '@/components'
 import { useStore } from 'vuex'
 export default {
   name: 'XtxCartPage',
@@ -161,13 +162,29 @@ export default {
     }
 
     // 删除商品
-    const deleteCart = (skuId) => {
-      store.dispatch('cart/deleteCart', skuId)
+    const deleteCart = async (skuId) => {
+      try {
+        await Confirm({ text: '确认删除商品嘛？' })
+        store.dispatch('cart/deleteCart', skuId)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    // 批量删除商品
+    const batchDeleteCart = async (isClear) => {
+      try {
+        await Confirm({
+          text: `您确定从购物车删除${isClear ? '失效' : '选中'}的商品吗？`
+        })
+        store.dispatch('cart/batchDeleteCart', isClear)
+      } catch (error) {}
     }
     return {
       changeChecked,
       checkAll,
-      deleteCart
+      deleteCart,
+      batchDeleteCart
     }
   }
 }
