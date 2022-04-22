@@ -2,7 +2,7 @@
   <XtxDialog title="取消订单" v-model:visible="visibleDialog">
     <!-- 组件内容 -->
     <div class="cancel-info">
-      <p>取消订单后，本单享有的优惠可能会一并取消，是否继续？</p>
+      <p>取消订单后，本单享有的优惠可能会一并取消，是否继续？阿萨德</p>
       <p class="tip">请选择取消订单的原因（必选）：</p>
       <div class="btn">
         <a
@@ -36,7 +36,6 @@ import { cancelOrder } from '@/api/order'
 export default {
   name: 'OrderCancel',
   setup () {
-    debugger
     const visibleDialog = ref(false)
     const cancelText = ref('')
     const currentOrder = ref(null)

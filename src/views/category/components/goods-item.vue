@@ -1,8 +1,8 @@
 <template>
-  <RouterLink v-if="good" :to="`/product/${good.id}`" class="goods-item">
+  <RouterLink v-if="good" :to="`/product/${good?.id}`" class="goods-item">
     <img v-lazy="good.picture" alt="" />
     <p class="name ellipsis">{{ good.name }}</p>
-    <p class="desc ellipsis">{{ good.tag }}</p>
+    <p class="desc ellipsis">{{ good?.tag }}</p>
     <p class="price">&yen;{{ good.price }}</p>
   </RouterLink>
 </template>

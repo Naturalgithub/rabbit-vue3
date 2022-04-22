@@ -6,12 +6,12 @@
     </div>
     <!-- 商品列表 -->
     <div class="goods-list">
-      <GoodsItem v-for="i in 4" :key="i" :goods="goods" />
+      <GoodsItem v-for="i in 4" :key="i" :good="good" />
     </div>
   </div>
 </template>
 <script>
-import GoodsItem from '@/views/category/components/goods-item'
+import GoodsItem from '@/views/category/components/goods-item.vue'
 export default {
   name: 'MemberHomeOrder',
   components: {
@@ -24,15 +24,16 @@ export default {
     }
   },
   setup () {
-    const goods = {
+    const good = {
       id: '1',
       name: '自煮火锅不排队 麦饭石不粘鸳鸯火锅',
       picture:
         'https://yanxuan-item.nosdn.127.net/fcdcb840a0f5dd754bb8fd2157579012.jpg',
       desc: '清汤鲜香 红汤劲爽',
+      tag: '1231',
       price: '159.00'
     }
-    return { goods }
+    return { good }
   }
 }
 </script>
