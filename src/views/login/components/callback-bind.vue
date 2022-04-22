@@ -115,8 +115,14 @@ export default {
           code: form.code
         })
         Message({ type: 'success', text: '绑定成功' })
+        // 登录成功
         store.commit('user/setProfile', result)
-        router.push('/')
+        // 合并购物车
+        store.dispatch('cart/mergeLocalCart').then(() => {
+          Message({ type: 'success', text: '登录成功' })
+          // 跳转到首页
+          router.push('/')
+        })
       } catch (error) {
         Message({ type: 'error', text: error.response.data.message })
       }

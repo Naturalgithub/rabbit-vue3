@@ -1,4 +1,12 @@
-import { getNewCartGoods } from '@/api/cart'
+import {
+  checkAllCart,
+  deleteCart,
+  findCartList,
+  getNewCartGoods,
+  insertCart,
+  mergeLocalCart,
+  updateCart
+} from '@/api/cart'
 import { Message } from '@/components'
 export default {
   namespaced: true,
@@ -95,6 +103,10 @@ export default {
     deleteCart (state, skuId) {
       const index = state.list.findIndex((item) => item.skuId === skuId)
       state.list.splice(index, 1)
+    },
+    // 设置购物车列表
+    setCartList (state, list) {
+      state.list = list
     }
   },
   actions: {
@@ -104,7 +116,12 @@ export default {
         // 判断用户是否登录，如果用户登录，发送请求，，否则提交mutaions
         if (context.rootState.user.profile.token) {
           // 用户登录账号
-          // TODO 发送请求
+          // 发送请求
+          insertCart(payload).then(() => {
+            // 重新拉取
+            context.dispatch('updateCart')
+            resolve()
+          })
         } else {
           context.commit('insertCart', payload)
           resolve()
@@ -116,7 +133,11 @@ export default {
       // 发送请求，更新购物车中所有的商品信息
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录TODO
+          // 登录
+          findCartList().then((data) => {
+            ctx.commit('setCartList', data.result)
+            resolve()
+          })
         } else {
           // 没有登录，需要发送请求进行商品信息更新
           const requestArr = ctx.state.list.map((item) => {
@@ -138,7 +159,11 @@ export default {
     deleteCart (ctx, skuId) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录TODO
+          // 登录时
+          deleteCart([skuId]).then(() => {
+            ctx.dispatch('updateCart')
+            resolve()
+          })
         } else {
           Message({ text: '删除成功' })
           ctx.commit('deleteCart', skuId)
@@ -150,7 +175,10 @@ export default {
     updateChange (context, payload) {
       return new Promise((resolve, reject) => {
         if (context.rootState.user.profile.token) {
-          // 登录TODO
+          // 登录
+          updateCart(payload).then(() => {
+            context.dispatch('updateCart')
+          })
         } else {
           context.commit('updateCart', payload)
         }
@@ -159,7 +187,11 @@ export default {
     // 选择全部反选
     checkAllCart (context, selected) {
       if (context.rootState.user.profile.token) {
-        // 登录TODO
+        // 登录
+        const ids = context.getters.validList.map((item) => item.skuId)
+        checkAllCart({ selected, ids }).then(() => {
+          context.dispatch('updateCart')
+        })
       } else {
         // 遍历有效的列表的 再去更新购物车
         context.getters.validList.forEach((item) => {
@@ -171,7 +203,13 @@ export default {
     batchDeleteCart (ctx, isClear) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录 TODO
+          // 登录
+          const ids = ctx.getters[isClear ? 'invalidList' : 'selectedList'].map(
+            (item) => item.skuId
+          )
+          deleteCart(ids).then(() => {
+            ctx.dispatch('updateCart')
+          })
         } else {
           // 本地
           // 1. 获取选中商品列表，进行遍历调用deleteCart mutaions函数
@@ -188,7 +226,21 @@ export default {
     updateCartSku (ctx, { oldSkuId, newSku }) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 登录 TODO
+          // 登录
+          const oldGoods = ctx.state.list.find(
+            (item) => item.skuId === oldSkuId
+          )
+          // 先删除 再添加
+          deleteCart([oldSkuId])
+            .then(() => {
+              return insertCart({
+                skuId: newSku.id,
+                count: oldGoods.count
+              })
+            })
+            .then(() => {
+              ctx.dispatch('updateCart')
+            })
         } else {
           // 本地
           // 修改sku的时候其实skuId也需要修改，相当于把原来的信息移除，创建一条新的商品信息
@@ -213,6 +265,19 @@ export default {
           resolve()
         }
       })
+    },
+
+    // 合并购物车
+    async mergeLocalCart (ctx) {
+      // 存储token后调用合并api接口函数进行购物合并
+      const cartList = ctx.getters.validList.map(
+        ({ skuId, selected, count }) => {
+          return { skuId, selected, count }
+        }
+      )
+      await mergeLocalCart(cartList)
+      // 合并成功将本地购物车删除
+      ctx.commit('setCartList', [])
     }
   }
 }

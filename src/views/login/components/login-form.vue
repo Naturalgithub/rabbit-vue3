@@ -122,7 +122,7 @@
 <script>
 import { ref, reactive, watch } from 'vue'
 import { Message } from '@/components/index'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import {
   userAccountLogin,
@@ -179,6 +179,7 @@ export default {
     // 密码登录
     const target = ref(null)
     const router = useRouter()
+    const route = useRoute()
     const store = useStore()
     const login = async () => {
       // console.log('发送请求登录')
@@ -193,10 +194,16 @@ export default {
         } else {
           res = await userAccountLogin(form.account, form.password)
         }
+        // 登录成功
         store.commit('user/setProfile', res.result)
-        Message({ type: 'success', text: '登录成功' })
-        // 跳转到首页
-        router.push('/')
+        // 合并购物车
+        store.dispatch('cart/mergeLocalCart').then(() => {
+          Message({ type: 'success', text: '登录成功' })
+          // 跳转到首页
+          // 账号密码登录. 跳转到首页
+          const redirectUrl = route.query.redirectUrl || '/'
+          router.push(redirectUrl)
+        })
       } catch (e) {
         Message({ type: 'error', text: e.response.data.message })
       }

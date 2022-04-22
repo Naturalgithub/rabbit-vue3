@@ -138,12 +138,14 @@ export default {
       if (valid) {
         try {
           const { result } = await userQQPatchLogin(props.unionId, form)
-          // 实现和之前登录一样的逻辑
+          // 登录成功
           store.commit('user/setProfile', result)
-          // 2. 跳转到来源页或者首页
-          router.push('/')
-          // 3. 成功提示
-          Message({ type: 'success', text: 'QQ完善信息成功' })
+          // 合并购物车
+          store.dispatch('cart/mergeLocalCart').then(() => {
+            // 跳转到首页
+            router.push('/')
+            Message({ type: 'success', text: 'QQ完善信息成功' })
+          })
         } catch (error) {
           Message({ type: 'error', text: '完善信息失败' })
         }

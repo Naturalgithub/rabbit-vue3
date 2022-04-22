@@ -3,9 +3,9 @@
     <div class="container">
       <ul>
         <li>
-          <a href="javascript:;"
-            ><i class="iconfont icon-user"></i> {{ profile.account }}</a
-          >
+          <RouterLink to="/member">
+            <i class="iconfont icon-user"></i>{{ profile.account }}
+          </RouterLink>
         </li>
         <template v-if="profile.token">
           <li><a href="javascript:;" @click="logout">退出登录</a></li>
@@ -40,7 +40,11 @@ export default {
       return store.state.user.profile
     })
 
+    // 退出功能
     const logout = () => {
+      // 清空购物车
+      store.commit('cart/setCartList', [])
+      // 清除个人信息
       store.commit('user/setProfile', {})
       router.push('/login')
       Message({ type: 'success', text: '退出成功' })

@@ -60,8 +60,17 @@ export default {
         unionId.value = openId
         try {
           const { result } = await userQQLogin(openId)
+          // 登录成功
           store.commit('user/setProfile', result)
-          router.push('/')
+          // 合并购物车
+          store.dispatch('cart/mergeLocalCart').then(() => {
+            Message({ type: 'success', text: '登录成功' })
+            // 跳转到首页
+            // 通过第三方登录，跳转到首页
+            const redirectUrl = localStorage.getItem('redirectUrl') || '/'
+            localStorage.removeItem('redirectUrl')
+            router.push(redirectUrl)
+          })
         } catch (error) {
           Message({ type: 'error', text: 'qq未绑定' })
         }
