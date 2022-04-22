@@ -1,4 +1,4 @@
-import RouterView, { createRouter, createWebHashHistory } from 'vue-router'
+import { RouterView, createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '@/views/layout'
 import Home from '@/views/home/index'
 import store from '@/store'

@@ -1,5 +1,6 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import { useIntersectionObserver, useIntervalFn } from '@vueuse/core'
+import dayjs from 'dayjs'
 
 export const useWindowScroll = () => {
   const x = ref(0)
@@ -97,5 +98,42 @@ export const useCountDown = () => {
   return {
     time,
     start
+  }
+}
+
+/**
+ * 封装支付倒计时
+ * @returns
+ */
+export function usePayTime () {
+  const time = ref(0)
+  const showTime = ref('')
+  const { resume, pause } = useIntervalFn(
+    () => {
+      time.value--
+      showTime.value = dayjs.unix(time.value).format('mm分ss秒')
+      if (time.value <= 0) {
+        pause()
+      }
+    },
+    1000,
+    {
+      immediate: false
+    }
+  )
+
+  onBeforeUnmount(() => {
+    pause()
+  })
+  const start = (num = 0) => {
+    time.value = num
+    // console.log(num)
+    showTime.value = dayjs.unix(time.value).format('mm分ss秒')
+    resume()
+  }
+  return {
+    start,
+    time,
+    showTime
   }
 }
