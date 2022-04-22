@@ -5,7 +5,7 @@
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
         <transition name="fade-right" mode="out-in">
-          <XtxBreadItem :key="category.id">{{ category?.name }}</XtxBreadItem>
+          <XtxBreadItem :key="category?.id">{{ category?.name }}</XtxBreadItem>
         </transition>
       </XtxBread>
 

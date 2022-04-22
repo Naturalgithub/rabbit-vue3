@@ -197,6 +197,7 @@ const initSelectedStatus = (goods, skuId) => {
       > img {
         width: 50px;
         height: 50px;
+        margin-bottom: 10px;
         .sku-state-mixin ();
       }
       > span {
@@ -204,6 +205,7 @@ const initSelectedStatus = (goods, skuId) => {
         height: 30px;
         line-height: 28px;
         padding: 0 20px;
+        margin-bottom: 10px;
         .sku-state-mixin ();
       }
     }

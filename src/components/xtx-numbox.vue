@@ -1,6 +1,6 @@
 <template>
   <div class="xtx-numbox">
-    <div class="label">数量</div>
+    <div class="label" v-if="label">{{ label }}</div>
     <div class="numbox">
       <a href="javascript:;" @click="changeNum(-1)" v-if="num > min">-</a>
       <a href="javascript:;" class="not-allowed" v-else>-</a>
@@ -16,7 +16,8 @@ export default {
   name: 'XtxNumbox',
   props: {
     label: {
-      type: String
+      type: [String, Boolean],
+      default: '数量'
     },
     modelValue: {
       type: Number,

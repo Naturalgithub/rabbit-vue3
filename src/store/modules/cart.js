@@ -183,6 +183,36 @@ export default {
           )
         }
       })
+    },
+    // 修改sku规格函数
+    updateCartSku (ctx, { oldSkuId, newSku }) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 登录 TODO
+        } else {
+          // 本地
+          // 修改sku的时候其实skuId也需要修改，相当于把原来的信息移除，创建一条新的商品信息
+          // 1、获取就得商品信息
+          const oldGoods = ctx.state.list.find(
+            (item) => item.skuId === oldSkuId
+          )
+          // 2、删除就得商品信息
+          ctx.commit('deleteCart', oldSkuId)
+          // 3、合并一条新的商品信息
+          const newGoods = {
+            ...oldGoods,
+            skuId: newSku.id,
+            nowPrice: newSku.nowPrice,
+            stock: newSku.inventory,
+            attrsText: newSku.specs.reduce((p, v) => {
+              return `${p} ${v.name}: ${v.valueName}`
+            }, '')
+          }
+          // 4、插入购物车
+          ctx.commit('insertCart', newGoods)
+          resolve()
+        }
+      })
     }
   }
 }

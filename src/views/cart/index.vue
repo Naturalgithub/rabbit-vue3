@@ -49,7 +49,12 @@
                   <div>
                     <p class="name ellipsis">{{ item.name }}</p>
                     <!-- 选择规格组件 -->
-                    <p class="attr">{{ item.attrsText }}</p>
+                    <CartSku
+                      v-if="item.skuId"
+                      :attrsText="item.attrsText"
+                      :skuId="item.skuId"
+                      @change="updateCartSku(item.skuId, $event)"
+                    ></CartSku>
                   </div>
                 </div>
               </td>
@@ -58,7 +63,12 @@
                 <p>比加入时降价 <span class="red">&yen;20.00</span></p>
               </td>
               <td class="tc">
-                <XtxNumbox :modelValue="item.count" />
+                <XtxNumbox
+                  :modelValue="item.count"
+                  :max="item.stock"
+                  :label="false"
+                  @change="changeCount(item.skuId, $event)"
+                />
               </td>
               <td class="tc">
                 <p class="f16 red">
@@ -95,9 +105,8 @@
                     <img :src="item.picture" alt="" />
                   </RouterLink>
                   <div>
-                    <p class="name ellipsis">
-                      {{ item.name }}
-                    </p>
+                    <p class="name ellipsis">{{ item.name }}</p>
+
                     <p class="attr">{{ item.attrsText }}</p>
                   </div>
                 </div>
@@ -144,11 +153,12 @@
 <script>
 import GoodRelevant from '@/views/goods/components/goods-relevant'
 import CartNone from './components/cart-none.vue'
+import CartSku from './components/cart-sku.vue'
 import { Confirm } from '@/components'
 import { useStore } from 'vuex'
 export default {
   name: 'XtxCartPage',
-  components: { GoodRelevant, CartNone },
+  components: { GoodRelevant, CartNone, CartSku },
   setup () {
     const store = useStore()
 
@@ -180,11 +190,23 @@ export default {
         store.dispatch('cart/batchDeleteCart', isClear)
       } catch (error) {}
     }
+
+    // 修改数量
+    const changeCount = (skuId, count) => {
+      store.dispatch('cart/updateChange', { skuId, count })
+    }
+
+    // 修改规格
+    const updateCartSku = (oldSkuId, newSku) => {
+      store.dispatch('cart/updateCartSku', { oldSkuId, newSku })
+    }
     return {
       changeChecked,
       checkAll,
       deleteCart,
-      batchDeleteCart
+      batchDeleteCart,
+      changeCount,
+      updateCartSku
     }
   }
 }
